@@ -1,10 +1,9 @@
+import Code from "./code";
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-       
-       
-        <p>hey</p>
+       <Code/>
        
       </header>
     </div>
