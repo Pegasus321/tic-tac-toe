@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import styled from 'styled-components';
 import x from './img/x.png';
 import o from './img/o.png';
@@ -12,6 +12,33 @@ const Code = () => {
 
     const [player, setPlayer] = useState(false);
     const [board, setBoard] = useState(initialBoard);
+    const [winner, setWinner] = useState(null);
+
+    useEffect(() => {
+        const checkWinner = () => {
+            // Check rows, columns, and diagonals for a winning combination
+            for (let i = 0; i < 3; i++) {
+                if (board[i][0] && board[i][0] === board[i][1] && board[i][0] === board[i][2]) {
+                    setWinner(board[i][0]);
+                    return;
+                }
+                if (board[0][i] && board[0][i] === board[1][i] && board[0][i] === board[2][i]) {
+                    setWinner(board[0][i]);
+                    return;
+                }
+            }
+            if (board[0][0] && board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
+                setWinner(board[0][0]);
+                return;
+            }
+            if (board[0][2] && board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
+                setWinner(board[0][2]);
+                return;
+            }
+        };
+
+        checkWinner();
+    }, [board]);
 
     const playerSwitch = (row, col) => {
         if (board[row][col] === null) {
@@ -25,10 +52,22 @@ const Code = () => {
     const restartGame = () => {
         setBoard(initialBoard);
         setPlayer(false);
+        setWinner(null)
+        
     };
+
+    let statusMessage = '';
+    if (winner) {
+        statusMessage = `Player ${winner.toUpperCase()} wins!`;
+    } else if (board.every(row => row.every(cell => cell !== null))) {
+        statusMessage = "It's a draw!";
+    } else {
+        statusMessage = `Current player: ${player ? 'X' : 'O'}`;
+    }
 
     return (
         <Container>
+            <h2>{statusMessage}</h2>
             <Table>
                 <tbody>
                     {board.map((row, rowIndex) => (
